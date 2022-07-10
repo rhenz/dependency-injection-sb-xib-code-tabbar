@@ -31,15 +31,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = UIWindow(windowScene: windowScene)
         
         // Initialize Root View Controller
-        guard let rootViewController = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateInitialViewController() as? RootViewController else {
+        guard let navVC = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateInitialViewController() as? UINavigationController else {
             fatalError("Unable to instantiate Root View Controller")
         }
         
+        // Get initial VC from the Navigation Controller
+        guard let rootVC = navVC.topViewController as? RootViewController else {
+            fatalError("Root View Controller not found in navigation controller")
+        }
+        
         // Configure Root View Controller
-        rootViewController.notes = notes
+        rootVC.notes = notes
         
         // Configure Window
-        self.window?.rootViewController = rootViewController
+        self.window?.rootViewController = navVC
         
         // Make Key And Visible
         self.window?.makeKeyAndVisible()

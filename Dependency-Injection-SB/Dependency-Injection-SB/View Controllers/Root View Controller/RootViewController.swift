@@ -43,6 +43,7 @@ class RootViewController: UIViewController {
     // MARK: - Navigation
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        /*
         guard let identifier = Segue.getIdentifier(segue.identifier) else { return }
         
         switch identifier {
@@ -55,12 +56,14 @@ class RootViewController: UIViewController {
                 fatalError("Unexpected Destination View Controller")
             }
             
+            /* PROPERTY INJECTION */
             // Fetch Note
             let note = notes[indexPath.item]
             
             // Configure Detail View Controller
             destination.note = note
         }
+         */
     }
     
 }
@@ -92,7 +95,24 @@ extension RootViewController: UITableViewDataSource {
 extension RootViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Fetch note
+        let note = notes[indexPath.item]
+        showNoteDetailViewController(note: note)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+}
+
+// MARK: - Helper Methods
+
+extension RootViewController {
+    private func showNoteDetailViewController(note: Note) {
+        guard let vc = storyboard?.instantiateViewController(identifier: "DetailViewController", creator: { coder in
+            return DetailViewController(coder: coder, note: note)
+        }) else {
+            fatalError("Failed to load Detail View Controller for some reason \(#file) \(#function)")
+        }
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
